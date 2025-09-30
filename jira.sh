@@ -574,7 +574,7 @@ handle_sprint_command() {
         list_sprints_for_project
     elif [[ -n "$ticket_id" && -n "$sprint_query" ]]; then
         # Usage: sprint <ticket_id> <sprint_name_regex>
-        assign_ticket_to_sprint "${ticket_id^^}" "$sprint_query"
+        assign_ticket_to_sprint "$(echo "$ticket_id" | tr '[:lower:]' '[:upper:]')" "$sprint_query"
     else
         show_help
         exit 1
@@ -591,10 +591,10 @@ handle_story_points() {
         sum_story_points_for_current_user
     elif [[ -n "$ticket_id" && -z "$points" ]]; then
         # sp <ticket>: show points for a ticket
-        get_story_points_for_ticket "${ticket_id^^}"
+        get_story_points_for_ticket "$(echo "$ticket_id" | tr '[:lower:]' '[:upper:]')"
     elif [[ -n "$ticket_id" && -n "$points" ]]; then
         # sp <ticket> <points>: set points for a ticket
-        set_story_points "${ticket_id^^}" "$points"
+        set_story_points "$(echo "$ticket_id" | tr '[:lower:]' '[:upper:]')" "$points"
     else
         show_help
         exit 1
@@ -822,20 +822,20 @@ main() {
         lt) list_tickets --table "$@" ;;
         get|g) 
             if [[ -z "$1" ]]; then echo "Error: 'get' requires a ticket ID."; exit 1; fi
-            get_ticket_details "${1^^}" "$2" ;; 
+            get_ticket_details "$(echo "$1" | tr '[:lower:]' '[:upper:]')" "$2" ;; 
         create|c) 
             if [[ -z "$1" ]]; then echo "Error: 'create' requires a ticket title."; exit 1; fi
             create_ticket "$1" ;; 
         done|d) 
             if [[ -z "$1" ]]; then echo "Error: 'done' requires a ticket ID."; exit 1; fi
-            transition_ticket_to_done "${1^^}" ;; 
+            transition_ticket_to_done "$(echo "$1" | tr '[:lower:]' '[:upper:]')" ;; 
         sp) 
             handle_story_points "$@" ;;
         sprint|s)
             handle_sprint_command "$@" ;;
         assign|a) 
             if [[ -z "$1" || -z "$2" ]]; then echo "Error: 'assign' requires a ticket ID and user."; exit 1; fi
-            assign_ticket "${1^^}" "$2" ;; 
+            assign_ticket "$(echo "$1" | tr '[:lower:]' '[:upper:]')" "$2" ;; 
                 assignees)
                     list_assignees "$1" ;;
                 assignee)
