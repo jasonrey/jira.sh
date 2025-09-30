@@ -781,6 +781,7 @@ show_help() {
     echo ""
     echo "Commands:"
     echo "  list (l) [user] [--flags]  List tickets. Defaults to you."
+    echo "    Aliases: ls (--short), la (--all), lt (--table)"
     echo "    --short, -s              List tickets in a compact, single-line format."
     echo "    --table, -t              List tickets in a table format."
     echo "    --all, -a                List all tickets (not just from open sprints)."
@@ -815,7 +816,10 @@ main() {
     shift
 
     case "$command" in
-        list|l) list_tickets "$@" ;; 
+        list|l) list_tickets "$@" ;;
+        ls) list_tickets --short "$@" ;;
+        la) list_tickets --all "$@" ;;
+        lt) list_tickets --table "$@" ;;
         get|g) 
             if [[ -z "$1" ]]; then echo "Error: 'get' requires a ticket ID."; exit 1; fi
             get_ticket_details "${1^^}" "$2" ;; 
