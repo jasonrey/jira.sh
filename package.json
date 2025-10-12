@@ -1,0 +1,48 @@
+{
+  "name": "jira-cli",
+  "version": "1.0.0",
+  "description": "A CLI tool for interacting with Jira.",
+  "main": "cli.js",
+  "type": "module",
+  "bin": {
+    "jira": "./cli.js"
+  },
+  "scripts": {
+    "checks": "biome check --fix && biome check",
+    "start": "node cli.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "extended-markdown-adf-parser": "^2.3.2",
+    "marklassian": "^1.1.0",
+    "yargs": "^17.7.2"
+  },
+  "author": "Jason Rey <jasonrey@outlook.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonrey/jira.sh.git"
+  },
+  "keywords": [
+    "jira",
+    "cli",
+    "atlassian",
+    "automation",
+    "productivity"
+  ],
+  "files": [
+    "cli.js",
+    "commands/",
+    "utils/",
+    "README.md"
+  ],
+  "homepage": "https://github.com/jasonrey/jira.sh#readme",
+  "bugs": {
+    "url": "https://github.com/jasonrey/jira.sh/issues"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.5"
+  }
+}
