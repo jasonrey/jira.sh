@@ -487,7 +487,7 @@ export async function updateTicket(ticketId, payload) {
   // A 204 No Content response is a success
 }
 
-export async function listTickets({ assigneeId, showAll, showDone }) {
+export async function listTickets({ assigneeId, showAll, showDone, sortBy }) {
   const { domain, headers } = getJiraAuth();
 
   let jql = '';
@@ -507,7 +507,17 @@ export async function listTickets({ assigneeId, showAll, showDone }) {
     jql += ' AND sprint in openSprints()';
   }
 
-  jql += ' ORDER BY updated DESC';
+  const sortMap = {
+    id: 'key',
+    title: 'summary',
+    created: 'created',
+  };
+
+  if (sortBy && sortMap[sortBy]) {
+    jql += ` ORDER BY ${sortMap[sortBy]} ASC`;
+  } else {
+    jql += ' ORDER BY updated DESC';
+  }
 
   const fields = ['key', 'summary', 'status'];
   const spFieldId = await getStoryPointsFieldId();

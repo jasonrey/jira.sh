@@ -33,6 +33,11 @@ export const listCommand = {
         alias: 'd',
         describe: 'List resolved/done tickets instead of open ones',
         type: 'boolean',
+      })
+      .option('sort', {
+        describe: 'Sort tickets by a specific field',
+        type: 'string',
+        choices: ['id', 'title', 'created'],
       });
   },
   handler: async (argv) => {
@@ -46,6 +51,7 @@ export const listCommand = {
         assigneeId,
         showAll: argv.all,
         showDone: argv.done,
+        sortBy: argv.sort,
       });
 
       if (issues.length === 0) {
