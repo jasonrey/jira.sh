@@ -469,13 +469,32 @@ export async function updateTicket(ticketId, payload) {
   const { domain, headers } = getJiraAuth();
   const url = `https://${domain}/rest/api/3/issue/${ticketId}`;
 
+  // Jira API can be particular about updating rich text fields.
+  // We need to use the `update` operation for the description.
+  const finalPayload = {
+    fields: { ...payload.fields },
+    update: {},
+  };
+
+  if (finalPayload.fields.description) {
+    finalPayload.update.description = [
+      { set: finalPayload.fields.description },
+    ];
+    delete finalPayload.fields.description; // Remove from the standard fields object
+  }
+
+  // If there are no other fields to update, remove the fields object
+  if (Object.keys(finalPayload.fields).length === 0) {
+    delete finalPayload.fields;
+  }
+
   const response = await fetch(url, {
     method: 'PUT',
     headers: {
       ...headers,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(finalPayload),
   });
 
   if (!response.ok) {
@@ -572,6 +591,7 @@ export async function getTicket(ticketId) {
     'assignee',
     'reporter',
     'comment',
+    'description',
     // Add story points field if it exists
     await getStoryPointsFieldId(),
   ]

@@ -3,7 +3,6 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { Parser } from 'extended-markdown-adf-parser';
-import { markdownToAdf } from 'marklassian';
 import { getTicket, updateTicket } from '../utils/api.js';
 
 async function getDescriptionFromEditor(initialContent = '') {
@@ -17,8 +16,6 @@ async function getDescriptionFromEditor(initialContent = '') {
   });
 
   if (editorProcess.status !== 0) {
-    // We don't throw an error here, as the user might just be quitting without saving.
-    // We'll just return the original content.
     console.warn(
       'Editor closed without successful save. Aborting description update.',
     );
@@ -26,7 +23,7 @@ async function getDescriptionFromEditor(initialContent = '') {
   }
 
   const newContent = await fs.readFile(tempFilePath, 'utf-8');
-  await fs.unlink(tempFilePath); // Clean up temp file
+  await fs.unlink(tempFilePath);
 
   return newContent;
 }
@@ -65,6 +62,7 @@ export const editCommand = {
       const payload = {
         fields: {},
       };
+      const adfParser = new Parser();
 
       if (title) {
         payload.fields.summary = title;
@@ -73,11 +71,12 @@ export const editCommand = {
       if (typeof description === 'string') {
         console.log('Updating description from text argument...');
         payload.fields.description =
-          description.trim() === '' ? null : markdownToAdf(description);
+          description.trim() === ''
+            ? null
+            : adfParser.markdownToAdf(description);
       } else if (description === true) {
         console.log('Fetching current description...');
         const ticket = await getTicket(ticketId);
-        const adfParser = new Parser();
         const initialMd = ticket.fields.description
           ? adfParser.adfToMarkdown(ticket.fields.description)
           : '';
@@ -89,19 +88,19 @@ export const editCommand = {
           console.log('Description unchanged. Skipping update.');
         } else {
           payload.fields.description =
-            newMd.trim() === '' ? null : markdownToAdf(newMd);
+            newMd.trim() === '' ? null : adfParser.markdownToAdf(newMd);
         }
       }
 
       if (Object.keys(payload.fields).length > 0) {
         console.log(`Updating ticket ${ticketId}...`);
         await updateTicket(ticketId, payload);
-        console.log(`\nSuccessfully updated ticket ${ticketId}.`);
+        console.log(`Successfully updated ticket ${ticketId}.`);
       } else {
         console.log('No changes to apply.');
       }
     } catch (error) {
-      console.error(`\nError: ${error.message}`);
+      console.error(`Error: ${error.message}`);
       process.exit(1);
     }
   },
