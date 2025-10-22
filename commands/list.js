@@ -14,16 +14,8 @@ export const listCommand = {
         describe: 'User name or email to filter by',
         type: 'string',
       })
-      .option('short', {
-        alias: 's',
-        describe: 'List in a compact, single-line format',
-        type: 'boolean',
-      })
-      .option('table', {
-        alias: 't',
-        describe: 'List in a table format',
-        type: 'boolean',
-      })
+
+
       .option('all', {
         alias: 'a',
         describe: 'List all tickets (not just from open sprints)',
@@ -59,11 +51,6 @@ export const listCommand = {
         return;
       }
 
-      if (argv.short) {
-        issues.forEach((issue) => {
-          console.log(`${issue.key}: ${issue.fields.summary}`);
-        });
-      } else if (argv.table) {
         const spFieldId = await getStoryPointsFieldId();
         const tableData = issues.map((issue) => ({
           ID: issue.key,
@@ -113,7 +100,6 @@ export const listCommand = {
             .join('  ');
           console.log(rowLine);
         });
-      }
     } catch (error) {
       console.error(`
 Error: ${error.message}`);

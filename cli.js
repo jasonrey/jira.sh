@@ -28,15 +28,7 @@ yargs(hideBin(process.argv))
   .command(editCommand)
   .command(commentCommand)
   .command(commentsCommand)
-  .command(
-    'ls [user]',
-    'Shortcut for list --short',
-    listCommand.builder,
-    (argv) => {
-      argv.short = true;
-      listCommand.handler(argv);
-    },
-  )
+
   .command(
     'la [user]',
     'Shortcut for list --all',
@@ -46,15 +38,7 @@ yargs(hideBin(process.argv))
       listCommand.handler(argv);
     },
   )
-  .command(
-    'lt [user]',
-    'Shortcut for list --table',
-    listCommand.builder,
-    (argv) => {
-      argv.table = true;
-      listCommand.handler(argv);
-    },
-  )
+
   .demandCommand(
     1,
     'A command is required. Use --help to see available commands.',
