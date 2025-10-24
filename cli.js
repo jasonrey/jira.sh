@@ -38,6 +38,15 @@ yargs(hideBin(process.argv))
       listCommand.handler(argv);
     },
   )
+  .command(
+    'ld [user]',
+    'Shortcut for list --done',
+    listCommand.builder,
+    (argv) => {
+      argv.done = true;
+      listCommand.handler(argv);
+    },
+  )
 
   .demandCommand(
     1,

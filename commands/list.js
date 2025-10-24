@@ -54,12 +54,12 @@ export const listCommand = {
         const spFieldId = await getStoryPointsFieldId();
         const tableData = issues.map((issue) => ({
           ID: issue.key,
-          Title: issue.fields.summary,
+          Status: issue.fields.status.name,
           Points:
             spFieldId && issue.fields[spFieldId]
               ? issue.fields[spFieldId].toString()
               : 'N/A',
-          Status: issue.fields.status.name,
+          Title: issue.fields.summary,
         }));
 
         // Custom table formatter to mimic `column -t`
