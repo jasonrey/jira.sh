@@ -15,6 +15,31 @@ import { listCommand } from './commands/list.js';
 import { spCommand } from './commands/sp.js';
 import { sprintCommand } from './commands/sprint.js';
 
+function checkEnvVars() {
+  const { JIRA_DOMAIN, JIRA_AUTH, EDITOR } = process.env;
+  const envStatus = [];
+
+  if (JIRA_DOMAIN && JIRA_AUTH) {
+    envStatus.push('JIRA_DOMAIN: configured');
+    envStatus.push('JIRA_AUTH: configured');
+  } else {
+    if (!JIRA_DOMAIN) {
+      envStatus.push('JIRA_DOMAIN: not configured');
+    }
+    if (!JIRA_AUTH) {
+      envStatus.push('JIRA_AUTH: not configured');
+    }
+  }
+
+  if (EDITOR) {
+    envStatus.push(`EDITOR: configured (${EDITOR})`);
+  } else {
+    envStatus.push('EDITOR: not configured (defaults to vim)');
+  }
+
+  return envStatus.join('\n  ');
+}
+
 yargs(hideBin(process.argv))
   .command(getCommand)
   .command(listCommand)
@@ -52,5 +77,7 @@ yargs(hideBin(process.argv))
     1,
     'A command is required. Use --help to see available commands.',
   )
+  .epilogue(`Environment Variables:
+  ${checkEnvVars()}`)
   .help()
   .strict().argv;
